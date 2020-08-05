@@ -12,16 +12,15 @@ function cut_text($text, $symbols = 300)
         // вводим переменные для цикла
         $text_length = 0;
         $i = 0;
-        $format_post = "";
         // запускаем цикл для перебора массива для подсчета общего количества символов в словах
         while ($text_length < $symbols) {
             $text_length += mb_strlen($gap_count[$i]); //счетчик длины слов
             $i++;
         }
         // склеиваем массив снова
-        $format_post = implode(" ", array_slice($gap_count, 0, $i)) . '... <a class="post-text__more-link" href="#">Читать далее</a>';
-        return $format_post;
+        $text = implode(" ", array_slice($gap_count, 0, $i)) . '... <a class="post-text__more-link" href="#">Читать далее</a>';
     }
+    return $text;
 }
 
 // двумерный массив с типами постов
