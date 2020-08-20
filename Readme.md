@@ -1,7 +1,7 @@
 # Личный проект «Readme»
 
 * Студент: [Григорий Сапожников](https://up.htmlacademy.ru/php/12/user/1327065).
-* Наставник: [Сергей Сергеев](https://up.htmlacademy.ru/php/12/user/953247).
+* Наставник: [Сергей Рожков](https://up.htmlacademy.ru/php/12/user/1069033).
 
 ---
 
