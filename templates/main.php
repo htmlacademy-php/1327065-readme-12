@@ -1,7 +1,3 @@
-<?php
-
-?>
-
 <section class="page__main page__main--popular">
     <div class="container">
         <h1 class="page__title page__title--popular">Популярное</h1>
@@ -109,20 +105,20 @@
                             <!--содержимое для поста-цитаты-->
                             <blockquote>
                                 <p>
-                                    <?php print($val['content']); ?>
+                                    <?=($val['content']); ?>
                                 </p>
                                 <cite>Неизвестный Автор</cite>
                             </blockquote>
                         <?php elseif ($val['type'] == 'post-photo'): ?>
                             <!--содержимое для поста-фото-->
                             <div class="post-photo__image-wrapper">
-                                <img src="img/<?php print($val['content']); ?>" alt="Фото от пользователя" width="360"
+                                <img src="img/<?=($val['content']); ?>" alt="Фото от пользователя" width="360"
                                      height="240">
                             </div>
                         <?php elseif ($val['type'] == 'post-link'): ?>
                             <!--содержимое для поста-ссылки-->
                             <div class="post-link__wrapper">
-                                <a class="post-link__external" href="http://<?php print($val['content']); ?>"
+                                <a class="post-link__external" href="http://<?=($val['content']); ?>"
                                    title="Перейти по ссылке">
                                     <div class="post-link__info-wrapper">
                                         <div class="post-link__icon-wrapper">
@@ -130,10 +126,10 @@
                                                  alt="Иконка">
                                         </div>
                                         <div class="post-link__info">
-                                            <h3><?php print($val['title']); ?></h3>
+                                            <h3><?=($val['title']); ?></h3>
                                         </div>
                                     </div>
-                                    <span><?php print($val['content']); ?></span>
+                                    <span><?=($val['content']); ?></span>
                                 </a>
                             </div>
                         <?php elseif ($val['type'] == 'post-video'): ?>
@@ -157,15 +153,15 @@
                             <a class="post__author-link" href="#" title="Автор">
                                 <div class="post__avatar-wrapper">
                                     <!--укажите путь к файлу аватара-->
-                                    <img class="post__author-avatar" src="img/<?php print($val['avatar']); ?>"
+                                    <img class="post__author-avatar" src="img/<?=($val['avatar']); ?>"
                                          alt="Аватар пользователя">
                                 </div>
                                 <div class="post__info">
                                     <b class="post__author-name">
                                         <!--здесь имя пользователя-->
-                                        <?php print($val['author']); ?>
+                                        <?=($val['author']); ?>
                                     </b>
-                                    <time class="post__time" datetime="">дата</time>
+                                    <time class="post__time" datetime="<?=show_date(($val['dt']), 'datetime_format'); ?>" title="<?=show_date(($val['dt']), 'title_format'); ?>"><?=show_date(($val['dt']), 'relative_format'); ?></time>
                                 </div>
                             </a>
                         </div>
