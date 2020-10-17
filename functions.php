@@ -41,15 +41,6 @@ function include_template($path, array $data = [])
     return ob_get_clean();
 }
 
-// Простая фильтр-функция
-function esc($str)
-{
-    $text = htmlspecialchars($str);
-    //$text = strip_tags($str);
-
-    return $text;
-}
-
 /**
  * Возвращает корректную форму множественного числа
  * Ограничения: только для целых чисел
