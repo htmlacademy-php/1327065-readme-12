@@ -6,8 +6,8 @@ DEFAULT COLLATE utf8_general_cli
 USE readme
 
 CREATE TABLE users (
-  id INT AUTO_INCREMENT PRIMARY KEY UNIQUE, -- ауто инкремент автоматом гененрирует айди
-  ts_add TIMESTAMP,
+  user_id INT AUTO_INCREMENT PRIMARY KEY UNIQUE, -- ауто инкремент автоматом гененрирует айди
+  timestamp_add TIMESTAMP,
   email VARCHAR(128) NOT NULL UNIQUE,
   login VARCHAR(128) NOT NULL UNIQUE,
   password CHAR(64) NOT NULL,
@@ -16,8 +16,8 @@ CREATE TABLE users (
 );
 
 CREATE TABLE posts (
-  id INT AUTO_INCREMENT PRIMARY KEY UNIQUE,
-  ts_add TIMESTAMP,
+  post_id INT AUTO_INCREMENT PRIMARY KEY UNIQUE,
+  timestamp_add TIMESTAMP,
   title CHAR NOT NULL,
   content VARCHAR,
   quote_author CHAR,
@@ -32,12 +32,12 @@ CREATE TABLE posts (
 );
 
 CREATE TABLE comments (
-  id INT AUTO_INCREMENT PRIMARY KEY UNIQUE,
-  ts_add TIMESTAMP,
-  comment VARCHAR,
-  commentator_id INT NOT NULL,
+  comment_id INT AUTO_INCREMENT PRIMARY KEY UNIQUE,
+  timestamp_add TIMESTAMP,
+  post_id INT NOT NULL,
   author_id INT NOT NULL,
-  post_id INT NOT NULL
+  comment VARCHAR,
+  commentator_id INT NOT NULL -- в ТЗ почему-то отсутствует данное поле/связь
 );
 
 CREATE TABLE likes (
@@ -54,7 +54,7 @@ CREATE TABLE subscription (
 
 CREATE TABLE messages (
   id INT AUTO_INCREMENT PRIMARY KEY UNIQUE,
-  ts_add TIMESTAMP,
+  timestamp_add TIMESTAMP,
   content VARCHAR,
   sender_id INT NOT NULL,
   recipient_id INT NOT NULL
