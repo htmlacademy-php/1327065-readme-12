@@ -1,6 +1,13 @@
 <?php
-
-// Функция обрезания текста на главной странице. Обрезает слишком длинный текст и добавляет ссылку на полную страницу статьи
+/**
+ * Функция обрезания текста.
+ * Используется при выводе списка постов.
+ * Обрезает слишком длинный текст и добавляет ссылку на полную страницу статьи
+ *
+ * @param $text
+ * @param int $symbols
+ * @return string
+ */
 function cut_text($text, $symbols = 300)
 {
     if (mb_strlen($text) > $symbols) {
@@ -20,24 +27,29 @@ function cut_text($text, $symbols = 300)
     return $text;
 }
 
-// Функция-шаблонизатор
+/**
+ * Функция-шаблонизатор
+ * 1. Проверяет наличие файла
+ * 2. Работает исключительно через буфер
+ * 3. extract импортирует переменные из массива в текущую таблицу символов,
+ * 4. Не использовать с непроверенными данными
+ * 5. Применяем htmlspecialchars
+ *
+ * @param $path - Наименование файла
+ * @param array $data - Массив с данными для вывода на страницу
+ * @return false|string
+ */
 function include_template($path, array $data = [])
 {
     $path = 'templates/' . $path . '.php';
 
-    // проверка наличия файла и доступа к нему
     if (!is_readable($path)) {
         return 'Шаблон не найден: [' . $path . ']';
     }
 
-    // Включение буферизации вывода
     ob_start();
-
-    // extract импортирует переменные из массива в текущую таблицу символов, вот только что за таблица символов такая, не использовать с непроверенными данными,поэтому применяем htmlspecialchars
     htmlspecialchars(extract($data));
     require_once $path;
-
-    // Получить содержимое текущего буфера и удалить его
     return ob_get_clean();
 }
 
@@ -87,7 +99,13 @@ function get_noun_plural_form(int $number, string $one, string $two, string $man
     }
 }
 
-// Функция работы с датой. Принимает unix timestamp и вовзвращает дату в человеческом виде
+/**
+ * Функция работы с датой. Принимает unix timestamp и вовзвращает дату в "человеческом" виде
+ *
+ * @param $timestamp
+ * @param $format
+ * @return false|string
+ */
 function show_date($timestamp, $format)
 {
     $dt = date_create();
@@ -109,7 +127,7 @@ function show_date($timestamp, $format)
                     ' минута назад',
                     ' минуты назад',
                     ' минут назад'
-            );
+                );
         } elseif ($timestamp + 3600 <= $current_timestamp && $timestamp + 86400 > $current_timestamp) { // от 60 минут до 24 часов
             $remaining_hours = ceil(($current_timestamp - $timestamp) / 3600);
             $format_timestamp = $remaining_hours . get_noun_plural_form(
@@ -117,7 +135,7 @@ function show_date($timestamp, $format)
                     ' час назад',
                     ' часа назад',
                     ' часов назад'
-            );
+                );
         } elseif ($timestamp + 86400 <= $current_timestamp && $timestamp + 604800 > $current_timestamp) { // от 24 часов но меньше 7 дней
             $remaining_days = ceil(($current_timestamp - $timestamp) / 86400);
             $format_timestamp = $remaining_days . get_noun_plural_form(
@@ -125,7 +143,7 @@ function show_date($timestamp, $format)
                     ' день назад',
                     ' дня назад',
                     ' дней назад'
-            );
+                );
         } elseif ($timestamp + 604800 <= $current_timestamp && $timestamp + 3024000 > $current_timestamp) { // от 7 дней но меньше 5 недель
             $remaining_weeks = ceil(($current_timestamp - $timestamp) / 604800);
             $format_timestamp = $remaining_weeks . get_noun_plural_form(
@@ -133,7 +151,7 @@ function show_date($timestamp, $format)
                     ' неделя назад',
                     ' недели назад',
                     ' недель назад'
-            );
+                );
         } elseif ($timestamp + 3024000 <= $current_timestamp) { // больше 5 недель
             $remaining_months = ceil(($current_timestamp - $timestamp) / 3024000);
             $format_timestamp = $remaining_months . get_noun_plural_form(
@@ -141,21 +159,17 @@ function show_date($timestamp, $format)
                     ' месяц назад',
                     ' месяца назад',
                     ' месяцев назад'
-            );
+                );
         }
     }
-
     return $format_timestamp;
 }
-
 
 // Эмуляция даты и преобразование формата
 function generate_random_date($current_timestamp)
 {
-
     //эмуляция рандомной даты в заданном диапазоне
     $previous_timestamp = $current_timestamp - 36288; // 3628800; // 42 дня
     $random_timestamp = rand($previous_timestamp, $current_timestamp);
-
     return $random_timestamp;
 }
