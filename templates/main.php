@@ -42,46 +42,16 @@
                             <span>Все</span>
                         </a>
                     </li>
-                    <li class="popular__filters-item filters__item">
-                        <a class="filters__button filters__button--photo button" href="#">
-                            <span class="visually-hidden">Фото</span>
-                            <svg class="filters__icon" width="22" height="18">
-                                <use xlink:href="#icon-filter-photo"></use>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="popular__filters-item filters__item">
-                        <a class="filters__button filters__button--video button" href="#">
-                            <span class="visually-hidden">Видео</span>
-                            <svg class="filters__icon" width="24" height="16">
-                                <use xlink:href="#icon-filter-video"></use>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="popular__filters-item filters__item">
-                        <a class="filters__button filters__button--text button" href="#">
-                            <span class="visually-hidden">Текст</span>
-                            <svg class="filters__icon" width="20" height="21">
-                                <use xlink:href="#icon-filter-text"></use>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="popular__filters-item filters__item">
-                        <a class="filters__button filters__button--quote button" href="#">
-                            <span class="visually-hidden">Цитата</span>
-                            <svg class="filters__icon" width="21" height="20">
-                                <use xlink:href="#icon-filter-quote"></use>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="popular__filters-item filters__item">
-                        <a class="filters__button filters__button--link button" href="#">
-                            <span class="visually-hidden">Ссылка</span>
-                            <svg class="filters__icon" width="21" height="18">
-                                <use xlink:href="#icon-filter-link"></use>
-                            </svg>
-                        </a>
-                    </li>
+                    <?php foreach ($content_type as $value): ?>
+                        <li class="popular__filters-item filters__item">
+                            <a class="filters__button filters__button--<?= $value['icon']; ?> button" href="#">
+                                <span class="visually-hidden"><?= $value['type']; ?></span>
+                                <svg class="filters__icon" width="22" height="18">
+                                    <use xlink:href="#icon-filter-<?= $value['icon']; ?>"></use>
+                                </svg>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
                 </ul>
             </div>
         </div>
@@ -91,48 +61,48 @@
             <!-- Показываем посты -->
             <?php foreach ($posts as $key => $val): ?>
                 <!-- тип поста -->
-                <article class="popular__post post <?=($val['type']); ?>">
+                <article class="popular__post post post-<?= ($val['icon']); ?>">
                     <header class="post__header">
                         <!--здесь заголовок-->
-                        <h2><?=($val['title']); ?></h2>
+                        <h2><?= ($val['title']); ?></h2>
                     </header>
                     <div class="post__main">
                         <!--здесь содержимое карточки-->
-                        <?php if ($val['type'] == 'post-text'): ?>
+                        <?php if ($val['icon'] == 'text'): ?>
                             <!--содержимое для поста-текста-->
-                            <p><?= (cut_text($val['content'])); ?></p>
-                        <?php elseif ($val['type'] == 'post-quote'): ?>
+                            <p><?= (cut_text($val['text_content'])); ?></p>
+                        <?php elseif ($val['icon'] == 'quote'): ?>
                             <!--содержимое для поста-цитаты-->
                             <blockquote>
                                 <p>
-                                    <?=($val['content']); ?>
+                                    <?= ($val['text_content']); ?>
                                 </p>
-                                <cite>Неизвестный Автор</cite>
+                                <cite><?= ($val['quote_author']); ?></cite>
                             </blockquote>
-                        <?php elseif ($val['type'] == 'post-photo'): ?>
+                        <?php elseif ($val['icon'] == 'photo'): ?>
                             <!--содержимое для поста-фото-->
                             <div class="post-photo__image-wrapper">
-                                <img src="img/<?=($val['content']); ?>" alt="Фото от пользователя" width="360"
+                                <img src="img/<?= ($val['image_content']); ?>" alt="Фото от пользователя" width="360"
                                      height="240">
                             </div>
-                        <?php elseif ($val['type'] == 'post-link'): ?>
+                        <?php elseif ($val['icon'] == 'link'): ?>
                             <!--содержимое для поста-ссылки-->
                             <div class="post-link__wrapper">
-                                <a class="post-link__external" href="http://<?=($val['content']); ?>"
+                                <a class="post-link__external" href="http://<?= ($val['link']); ?>"
                                    title="Перейти по ссылке">
                                     <div class="post-link__info-wrapper">
                                         <div class="post-link__icon-wrapper">
-                                            <img src="https://www.google.com/s2/favicons?domain=vitadental.ru"
+                                            <img src="https://www.google.com/s2/favicons?domain=<?= ($val['link']); ?>"
                                                  alt="Иконка">
                                         </div>
                                         <div class="post-link__info">
-                                            <h3><?=($val['title']); ?></h3>
+                                            <h3><?= ($val['title']); ?></h3>
                                         </div>
                                     </div>
-                                    <span><?=($val['content']); ?></span>
+                                    <span><?= ($val['link']); ?></span>
                                 </a>
                             </div>
-                        <?php elseif ($val['type'] == 'post-video'): ?>
+                        <?php elseif ($val['icon'] == 'video'): ?>
                             <!--содержимое для поста-видео-->
                             <div class="post-video__block">
                                 <div class="post-video__preview">
@@ -153,15 +123,17 @@
                             <a class="post__author-link" href="#" title="Автор">
                                 <div class="post__avatar-wrapper">
                                     <!--укажите путь к файлу аватара-->
-                                    <img class="post__author-avatar" src="img/<?=($val['avatar']); ?>"
+                                    <img class="post__author-avatar" src="img/<?= ($val['avatar_path']); ?>"
                                          alt="Аватар пользователя">
                                 </div>
                                 <div class="post__info">
                                     <b class="post__author-name">
                                         <!--здесь имя пользователя-->
-                                        <?=($val['author']); ?>
+                                        <?= ($val['login']); ?>
                                     </b>
-                                    <time class="post__time" datetime="<?=show_date(($val['dt']), 'datetime_format'); ?>" title="<?=show_date(($val['dt']), 'title_format'); ?>"><?=show_date(($val['dt']), 'relative_format'); ?></time>
+                                    <time class="post__time"
+                                          datetime="<?= show_date(($val['timestamp_add']), 'datetime_format'); ?>"
+                                          title="<?= show_date(($val['timestamp_add']), 'title_format'); ?>"><?= show_date(($val['timestamp_add']), 'relative_format'); ?></time>
                                 </div>
                             </a>
                         </div>
