@@ -106,63 +106,122 @@ function get_noun_plural_form(int $number, string $one, string $two, string $man
  * @param $format
  * @return false|string
  */
-function show_date($timestamp, $format)
+function show_date($time, $format)
 {
+    $timestamp = strtotime($time);
     $dt = date_create();
     $dt = date_timestamp_set($dt, $timestamp);
-
     $current_timestamp = time();
-//    $format_timestamp = date_format($dt, "d.m.Y H:i");
 
     //преобразование формата даты
-    if ($format === 'datetime_format') {
-        $format_timestamp = date_format($dt, "d-m-Y H:i");
-    } elseif ($format === 'title_format') {
-        $format_timestamp = date_format($dt, "d.m.Y H:i");
-    } elseif ($format === 'relative_format') {
-        if ($timestamp + 3600 > $current_timestamp) { // до 60 минут
-            $remaining_minutes = ceil(($current_timestamp - $timestamp) / 60);
-            $format_timestamp = $remaining_minutes . get_noun_plural_form(
-                    $remaining_minutes,
-                    ' минута назад',
-                    ' минуты назад',
-                    ' минут назад'
-                );
-        } elseif ($timestamp + 3600 <= $current_timestamp && $timestamp + 86400 > $current_timestamp) { // от 60 минут до 24 часов
-            $remaining_hours = ceil(($current_timestamp - $timestamp) / 3600);
-            $format_timestamp = $remaining_hours . get_noun_plural_form(
-                    $remaining_hours,
-                    ' час назад',
-                    ' часа назад',
-                    ' часов назад'
-                );
-        } elseif ($timestamp + 86400 <= $current_timestamp && $timestamp + 604800 > $current_timestamp) { // от 24 часов но меньше 7 дней
-            $remaining_days = ceil(($current_timestamp - $timestamp) / 86400);
-            $format_timestamp = $remaining_days . get_noun_plural_form(
-                    $remaining_days,
-                    ' день назад',
-                    ' дня назад',
-                    ' дней назад'
-                );
-        } elseif ($timestamp + 604800 <= $current_timestamp && $timestamp + 3024000 > $current_timestamp) { // от 7 дней но меньше 5 недель
-            $remaining_weeks = ceil(($current_timestamp - $timestamp) / 604800);
-            $format_timestamp = $remaining_weeks . get_noun_plural_form(
-                    $remaining_weeks,
-                    ' неделя назад',
-                    ' недели назад',
-                    ' недель назад'
-                );
-        } elseif ($timestamp + 3024000 <= $current_timestamp) { // больше 5 недель
-            $remaining_months = ceil(($current_timestamp - $timestamp) / 3024000);
-            $format_timestamp = $remaining_months . get_noun_plural_form(
-                    $remaining_months,
-                    ' месяц назад',
-                    ' месяца назад',
-                    ' месяцев назад'
-                );
+    switch ($format) {
+        case 'datetime_format':
+            $format_timestamp = date_format($dt, DATETIME_FORMAT);
+            break;
+        case 'title_format':
+            $format_timestamp = date_format($dt, TITLE_FORMAT);
+            break;
+        case 'relative_format':
+            if ($timestamp + SIXTY_MINUTES > $current_timestamp) { // до 60 минут
+                $remaining_minutes = ceil(($current_timestamp - $timestamp) / SIXTY_SECONDS);
+                $format_timestamp = $remaining_minutes . get_noun_plural_form(
+                        $remaining_minutes,
+                        ' минута',
+                        ' минуты',
+                        ' минут'
+                    );
+            } elseif ($timestamp + SIXTY_MINUTES <= $current_timestamp && $timestamp + TWENTY_FOUR_HOURS > $current_timestamp) { // от 60 минут до 24 часов
+                $remaining_hours = ceil(($current_timestamp - $timestamp) / SIXTY_MINUTES);
+                $format_timestamp = $remaining_hours . get_noun_plural_form(
+                        $remaining_hours,
+                        ' час',
+                        ' часа',
+                        ' часов'
+                    );
+            } elseif ($timestamp + TWENTY_FOUR_HOURS <= $current_timestamp && $timestamp + SEVEN_DAYS > $current_timestamp) { // от 24 часов но меньше 7 дней
+                $remaining_days = ceil(($current_timestamp - $timestamp) / TWENTY_FOUR_HOURS);
+                $format_timestamp = $remaining_days . get_noun_plural_form(
+                        $remaining_days,
+                        ' день',
+                        ' дня',
+                        ' дней'
+                    );
+            } elseif ($timestamp + SEVEN_DAYS <= $current_timestamp && $timestamp + FIVE_WEEKS > $current_timestamp) { // от 7 дней но меньше 5 недель
+                $remaining_weeks = ceil(($current_timestamp - $timestamp) / SEVEN_DAYS);
+                $format_timestamp = $remaining_weeks . get_noun_plural_form(
+                        $remaining_weeks,
+                        ' неделя',
+                        ' недели',
+                        ' недель'
+                    );
+            } elseif ($timestamp + FIVE_WEEKS <= $current_timestamp) { // больше 5 недель
+                $remaining_months = ceil(($current_timestamp - $timestamp) / FIVE_WEEKS);
+                $format_timestamp = $remaining_months . get_noun_plural_form(
+                        $remaining_months,
+                        ' месяц',
+                        ' месяца',
+                        ' месяцев'
+                    );
+            }
+            break;
+    }
+
+    return $format_timestamp;
+}
+
+/**
+ * Функция выполняющая запросы к БД
+ * @param $sql - запрос к БД
+ * @return array|int
+ */
+function requestDataBase($sql, $type)
+{
+    $connect = mysqli_connect("localhost", "root", "root", "readme");
+    mysqli_set_charset($connect, "utf8");
+
+    if (!$connect) {
+        $error = mysqli_connect_error();
+        $answerDataBase = print("Ошибка MySQL: " . $error);
+    } else {
+
+        if ($result = mysqli_query($connect, $sql)) {
+            switch ($type) {
+                case 'all':
+                    $answerDataBase = mysqli_fetch_all($result, MYSQLI_ASSOC);
+                    break;
+                case 'row':
+                    $answerDataBase = mysqli_fetch_row($result)[0];
+                    break;
+                case 'num':
+                    $answerDataBase = mysqli_num_rows($result);
+                    break;
+            }
+        } else {
+            $error = mysqli_error($connect);
+            $answerDataBase = print("Ошибка MySQL: " . $error);
         }
     }
-    return $format_timestamp;
+    return $answerDataBase;
+}
+
+/**
+ * Вызов ошибки 404
+ * @param $is_auth
+ * @param $user_name
+ */
+function open_404_page($is_auth, $user_name)
+{
+    $getPage404 = include_template('page-404');
+    $getLayout = include_template('layout', [
+        'page_title' => 'ReadMe: Страница не найдена',
+        'contentPage' => $getPage404,
+        'is_auth' => $is_auth,
+        'user_name' => $user_name
+    ]);
+
+    print ($getLayout);
+    http_response_code(404);
+    die();
 }
 
 // Эмуляция даты и преобразование формата
