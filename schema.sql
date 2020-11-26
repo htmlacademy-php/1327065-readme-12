@@ -17,18 +17,18 @@ CREATE TABLE users
 
 CREATE TABLE posts
 (
-    id            INT AUTO_INCREMENT PRIMARY KEY UNIQUE,
-    timestamp_add TIMESTAMP,
-    title         VARCHAR(128) NOT NULL,
-    text_content  VARCHAR(1024),
-    quote_author  VARCHAR(1024),
-    image_content VARCHAR(1024),
-    video_content VARCHAR(1024),
-    link          VARCHAR(1024),
-    view_count    INT,
-    author_id     INT  NOT NULL,
-    content_type  VARCHAR(1024),
-    hashtag       VARCHAR(1024),
+    id              INT AUTO_INCREMENT PRIMARY KEY UNIQUE,
+    timestamp_add   TIMESTAMP, -- DEFAULT CURRENT_TIMESTAMP NOT NULL потом добавь, на рабочую базу
+    title           VARCHAR(128) NOT NULL,
+    text_content    TEXT,
+    quote_author    VARCHAR(1024),
+    image_content   VARCHAR(1024),
+    video_content   VARCHAR(1024),
+    link            VARCHAR(1024),
+    show_count      INT,
+    author_id       INT          NOT NULL,
+    content_type_id INT,
+    hashtag         VARCHAR(1024),
     INDEX (title)
 );
 

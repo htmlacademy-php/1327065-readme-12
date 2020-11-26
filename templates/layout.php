@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?=$page_title?></title>
+    <title><?= $page_title ?></title>
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body class="page">
@@ -152,7 +152,7 @@
                                 <div class="header__profile-name">
                                 <span>
                                     <!--здесь должно быть имя пользователя-->
-                                    <?=$user_name?>
+                                    <?= $user_name ?>
                                 </span>
                                     <svg class="header__link-arrow" width="10" height="6">
                                         <use xlink:href="#icon-arrow-right-ad"></use>
@@ -199,7 +199,7 @@
     </div>
 </header>
 
-<?=$layout_data?>
+<?= $contentPage; ?>
 
 <footer class="footer">
     <div class="footer__wrapper">
@@ -259,6 +259,6 @@
 </footer>
 <script src="libs/dropzone.js"></script>
 <script src="js/dropzone-settings.js"></script>
-<script src="js/main.js"></script>
+<!--<script src="js/main.js"></script> Из-за этого дерьма не открываются ссылки -->
 </body>
 </html>

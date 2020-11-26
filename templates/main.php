@@ -37,14 +37,18 @@
                 <b class="popular__filters-caption filters__caption">Тип контента:</b>
                 <ul class="popular__filters-list filters__list">
                     <li class="popular__filters-item popular__filters-item--all filters__item filters__item--all">
-                        <a class="filters__button filters__button--ellipse filters__button--all filters__button--active"
-                           href="#">
+                        <a class="filters__button filters__button--ellipse filters__button--all <?php if (!$contentIndex) {
+                            print('filters__button--active');
+                        } ?>"
+                           href="../index.php">
                             <span>Все</span>
                         </a>
                     </li>
-                    <?php foreach ($content_type as $value): ?>
+                    <?php foreach ($contentType as $value): ?>
                         <li class="popular__filters-item filters__item">
-                            <a class="filters__button filters__button--<?= $value['icon']; ?> button" href="#">
+                            <a class="filters__button filters__button--<?= $value['icon']; ?> button <?php if ($contentIndex == $value['id']) {
+                                print('filters__button--active');
+                            } ?>" href="../index.php?tab=<?= $value['id']; ?>">
                                 <span class="visually-hidden"><?= $value['type']; ?></span>
                                 <svg class="filters__icon" width="22" height="18">
                                     <use xlink:href="#icon-filter-<?= $value['icon']; ?>"></use>
@@ -59,12 +63,14 @@
 
 
             <!-- Показываем посты -->
-            <?php foreach ($posts as $key => $val): ?>
+            <?php foreach ($contentShow as $key => $val): ?>
                 <!-- тип поста -->
                 <article class="popular__post post post-<?= ($val['icon']); ?>">
                     <header class="post__header">
                         <!--здесь заголовок-->
-                        <h2><?= ($val['title']); ?></h2>
+                        <a href="post.php?id=<?= ($val['id']); ?>">
+                            <h2><?= ($val['title']); ?></h2>
+                        </a>
                     </header>
                     <div class="post__main">
                         <!--здесь содержимое карточки-->
@@ -133,7 +139,9 @@
                                     </b>
                                     <time class="post__time"
                                           datetime="<?= show_date(($val['timestamp_add']), 'datetime_format'); ?>"
-                                          title="<?= show_date(($val['timestamp_add']), 'title_format'); ?>"><?= show_date(($val['timestamp_add']), 'relative_format'); ?></time>
+                                          title="<?= show_date(($val['timestamp_add']), 'title_format'); ?>">
+                                        <?= show_date(($val['timestamp_add']), 'relative_format'); ?> назад
+                                    </time>
                                 </div>
                             </a>
                         </div>

@@ -1,36 +1,55 @@
 <?php
+require_once 'constants.php'; // Подключаем файл с константами
 require_once 'functions.php'; // Подключаем файл с функциями
 require_once 'data.php'; // Подключаем файл с данными
 
-$connect_db = mysqli_connect("localhost", "root", "root", "readme");
-mysqli_set_charset($connect_db, "utf8");
+// вывод закладок с типом контента на страницу популярных постов
+$requestContentType = "SELECT id, type, icon FROM content_type";
+$getContentType = requestDataBase($requestContentType, 'all');
 
-if (!$connect_db) {
-    $error = mysqli_connect_error();
-    print("Ошибка MySQL: " . $error);
-} else {
-    $query_content_type = "SELECT * FROM content_type";
-    $result_content_type = mysqli_query($connect_db, $query_content_type);
-    if ($result_content_type) {
-        $content_type = mysqli_fetch_all($result_content_type, MYSQLI_ASSOC);
-    } else {
-        $error = mysqli_error($connect_db);
-        print("Ошибка MySQL: " . $error);
-    }
 
-    $query_posts_list = "SELECT * FROM posts JOIN users ON posts.author_id = users.id JOIN content_type ON posts.content_type = content_type.id ORDER BY view_count DESC";
-    $result_posts_list = mysqli_query($connect_db, $query_posts_list);
-    if (!$result_posts_list) {
-        $error = mysqli_error($connect_db);
-        print("Ошибка MySQL: " . $error);
-    } else {
-        $posts_list = mysqli_fetch_all($result_posts_list, MYSQLI_ASSOC);
-    }
+// Вывод постов. Популярное. // Фильтрация вывода постов
+$get_tab_param = filter_input(INPUT_GET, 'tab');
+
+$where = '';
+if (isset($get_tab_param)) {
+    $where = "WHERE p.content_type_id = '$get_tab_param'";
 }
 
+$requestShowContent = "
+        SELECT p.*, ct.icon, u.avatar_path, u.login
+        FROM posts p
+        JOIN users u ON p.author_id = u.id
+        JOIN content_type ct ON p.content_type_id = ct.id
+        $where
+--        ORDER BY $sort_field DESC // заготовка для сортировки
+        LIMIT 6
+        ";
+$getContentShow = requestDataBase($requestShowContent, 'all');
 
-$layout_data = include_template('main', ['content_type' => $content_type, 'posts' => $posts_list]);
-$layout = include_template('layout', ['page_title' => $page_title, 'layout_data' => $layout_data, 'is_auth' => $is_auth, 'user_name' => $user_name]);
+// Заготовка сортировки вывода постов, пока оставить
+//    $sort_field = 'show_count';
+//    $sort = filter_input(INPUT_GET, 'sort');
+//    if ($sort == 'new') {
+//        $sort_field = 'timestamp_add';
+//    }
+//die (var_export($_GET['id']));
 
-print ($layout);
+// сверяем запрос для визуализации выбора вкладки
+$getContentIndex = isset($get_tab_param) ? $get_tab_param : '';
+
+$getContentPage = include_template('main', [
+    'contentType' => $getContentType,
+    'contentShow' => $getContentShow,
+    'contentIndex' => $getContentIndex
+]);
+
+$getLayout = include_template('layout', [
+    'page_title' => $page_title,
+    'contentPage' => $getContentPage,
+    'is_auth' => $is_auth,
+    'user_name' => $user_name
+]);
+
+print ($getLayout);
 
