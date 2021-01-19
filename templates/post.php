@@ -7,23 +7,7 @@
                 <div class="post-details__wrapper post-<?= ($val['icon']); ?>">
                     <div class="post-details__main-block post post--details" style="border-radius: 0 0 30px 30px;">
 
-                        <?php switch ($postShow[0]['content_type_id']) {
-                            case 1:
-                                print $postQuote;
-                                break;
-                            case 2:
-                                print $postText;
-                                break;
-                            case 3:
-                                print $postPhoto;
-                                break;
-                            case 4:
-                                print $postVideo;
-                                break;
-                            case 5:
-                                print $postLink;
-                                break;
-                        } ?>
+                        <?= $showPost; ?>
 
                         <div class="post__indicators">
                             <div class="post__buttons">

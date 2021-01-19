@@ -190,7 +190,7 @@
                             </div>
                         </li>
                         <li>
-                            <a class="header__post-button button button--transparent" href="adding-post.html">Пост</a>
+                            <a class="header__post-button button button--transparent" href="add.php">Пост</a>
                         </li>
                     </ul>
                 </nav>
@@ -258,7 +258,7 @@
     </div>
 </footer>
 <script src="libs/dropzone.js"></script>
-<script src="js/dropzone-settings.js"></script>
-<!--<script src="js/main.js"></script> Из-за этого дерьма не открываются ссылки -->
+<!--<script src="js/dropzone-settings.js"></script>--> <!-- Из-за этого не загружаются файлы при добавдении поста -->
+<!--<script src="js/main.js"></script>--> <!--Из-за этого не открываются ссылки. Как тут без мата писать? Если уже вторая проблема с JS-файлами. А курс у нас, на минуточку, по PHP. Это нормально вообще? -->
 </body>
 </html>

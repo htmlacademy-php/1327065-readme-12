@@ -28,78 +28,6 @@ function cut_text($text, $symbols = 300)
 }
 
 /**
- * Функция-шаблонизатор
- * 1. Проверяет наличие файла
- * 2. Работает исключительно через буфер
- * 3. extract импортирует переменные из массива в текущую таблицу символов,
- * 4. Не использовать с непроверенными данными
- * 5. Применяем htmlspecialchars
- *
- * @param $path - Наименование файла
- * @param array $data - Массив с данными для вывода на страницу
- * @return false|string
- */
-function include_template($path, array $data = [])
-{
-    $path = 'templates/' . $path . '.php';
-
-    if (!is_readable($path)) {
-        return 'Шаблон не найден: [' . $path . ']';
-    }
-
-    ob_start();
-    htmlspecialchars(extract($data));
-    require_once $path;
-    return ob_get_clean();
-}
-
-/**
- * Возвращает корректную форму множественного числа
- * Ограничения: только для целых чисел
- *
- * Пример использования:
- * $remaining_minutes = 5;
- * echo "Я поставил таймер на {$remaining_minutes} " .
- *     get_noun_plural_form(
- *         $remaining_minutes,
- *         'минута',
- *         'минуты',
- *         'минут'
- *     );
- * Результат: "Я поставил таймер на 5 минут"
- *
- * @param int $number Число, по которому вычисляем форму множественного числа
- * @param string $one Форма единственного числа: яблоко, час, минута
- * @param string $two Форма множественного числа для 2, 3, 4: яблока, часа, минуты
- * @param string $many Форма множественного числа для остальных чисел
- *
- * @return string Рассчитанная форма множественнго числа
- */
-function get_noun_plural_form(int $number, string $one, string $two, string $many): string
-{
-    $number = (int)$number;
-    $mod10 = $number % 10;
-    $mod100 = $number % 100;
-
-    switch (true) {
-        case ($mod100 >= 11 && $mod100 <= 20):
-            return $many;
-
-        case ($mod10 > 5):
-            return $many;
-
-        case ($mod10 === 1):
-            return $one;
-
-        case ($mod10 >= 2 && $mod10 <= 4):
-            return $two;
-
-        default:
-            return $many;
-    }
-}
-
-/**
  * Функция работы с датой. Принимает unix timestamp и вовзвращает дату в "человеческом" виде
  *
  * @param $timestamp
@@ -171,12 +99,13 @@ function show_date($time, $format)
 
 /**
  * Функция выполняющая запросы к БД
- * @param $sql - запрос к БД
- * @return array|int
+ * @param $connect - Ресурс соединения
+ * @param $sql -  запрос к БД
+ * @param string $type - тип данных
+ * @return array|int|mixed
  */
-function requestDataBase($sql, $type)
+function requestDataBase($connect, $sql, $type = 'all')
 {
-    $connect = mysqli_connect("localhost", "root", "root", "readme");
     mysqli_set_charset($connect, "utf8");
 
     if (!$connect) {
@@ -211,8 +140,8 @@ function requestDataBase($sql, $type)
  */
 function open_404_page($is_auth, $user_name)
 {
-    $getPage404 = include_template('page-404');
-    $getLayout = include_template('layout', [
+    $getPage404 = include_template('page-404.php');
+    $getLayout = include_template('layout.php', [
         'page_title' => 'ReadMe: Страница не найдена',
         'contentPage' => $getPage404,
         'is_auth' => $is_auth,
@@ -224,11 +153,29 @@ function open_404_page($is_auth, $user_name)
     die();
 }
 
-// Эмуляция даты и преобразование формата
-function generate_random_date($current_timestamp)
+function addingPost()
 {
-    //эмуляция рандомной даты в заданном диапазоне
-    $previous_timestamp = $current_timestamp - 36288; // 3628800; // 42 дня
-    $random_timestamp = rand($previous_timestamp, $current_timestamp);
-    return $random_timestamp;
+
+}
+
+/**
+ * Возвращает id типа контента
+ * @param $connect - соединение
+ * @param $content_type - массив с типом контента
+ * @return mixed
+ */
+function define_content_type($connect, $content_type)
+{
+    $where = '';
+    if (isset($content_type)) {
+        $where = "WHERE icon = '$content_type'";
+    }
+
+    $content_type_id = requestDataBase($connect, "
+                SELECT id, type, icon
+                FROM content_type
+                $where
+                ");
+
+    return $content_type_id[0]['id'];
 }

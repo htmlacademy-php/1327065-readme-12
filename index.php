@@ -1,15 +1,15 @@
 <?php
 require_once 'constants.php'; // Подключаем файл с константами
 require_once 'functions.php'; // Подключаем файл с функциями
+require_once 'helpers.php'; // Подключаем файл с встроенными функциями
 require_once 'data.php'; // Подключаем файл с данными
 
 // вывод закладок с типом контента на страницу популярных постов
-$requestContentType = "SELECT id, type, icon FROM content_type";
-$getContentType = requestDataBase($requestContentType, 'all');
+$getContentType = requestDataBase($connect,"SELECT id, type, icon FROM content_type");
 
 
 // Вывод постов. Популярное. // Фильтрация вывода постов
-$get_tab_param = filter_input(INPUT_GET, 'tab');
+$get_tab_param = filter_input(INPUT_GET, 'tab', FILTER_VALIDATE_INT);
 
 $where = '';
 if (isset($get_tab_param)) {
@@ -25,7 +25,7 @@ $requestShowContent = "
 --        ORDER BY $sort_field DESC // заготовка для сортировки
         LIMIT 6
         ";
-$getContentShow = requestDataBase($requestShowContent, 'all');
+$getContentShow = requestDataBase($connect, $requestShowContent);
 
 // Заготовка сортировки вывода постов, пока оставить
 //    $sort_field = 'show_count';
@@ -38,14 +38,14 @@ $getContentShow = requestDataBase($requestShowContent, 'all');
 // сверяем запрос для визуализации выбора вкладки
 $getContentIndex = isset($get_tab_param) ? $get_tab_param : '';
 
-$getContentPage = include_template('main', [
+$getContentPage = include_template('main.php', [
     'contentType' => $getContentType,
     'contentShow' => $getContentShow,
     'contentIndex' => $getContentIndex
 ]);
 
-$getLayout = include_template('layout', [
-    'page_title' => $page_title,
+$getLayout = include_template('layout.php', [
+    'page_title' => 'ReadMe: Популярное',
     'contentPage' => $getContentPage,
     'is_auth' => $is_auth,
     'user_name' => $user_name

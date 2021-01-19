@@ -1,4 +1,7 @@
 <?php
+// Доступ к БД
+$connect = mysqli_connect("localhost", "root", "root", "readme");
+
 // Заголовок
 $page_title = 'ReadMe: Популярное';
 
@@ -9,5 +12,3 @@ setlocale(LC_ALL, 'ru_RU'); // устанавливаем в качестве д
 // Авторизация
 $is_auth = rand(0, 1); // рандомная авторизация
 $user_name = 'Угон Харлеев'; // Имя пользователя
-
-
