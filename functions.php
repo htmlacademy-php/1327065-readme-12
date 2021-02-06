@@ -153,6 +153,9 @@ function open_404_page($is_auth, $user_name)
     die();
 }
 
+/**
+ *
+ */
 function addingPost()
 {
 
@@ -178,4 +181,45 @@ function define_content_type($connect, $content_type)
                 ");
 
     return $content_type_id[0]['id'];
+}
+
+/**
+ * Получаем значения из запроса
+ * @param $data - массив с данными
+ * @param $name - имя ключа
+ * @return mixed|string
+ */
+function getPostVal($data, $name)
+{
+    return $data[$name] ?? "";
+}
+
+/**
+ * Проверяет поля на заполнение. А также проверяет ссылку
+ * @param $required_fields
+ * @param $fields_list
+ * @return array
+ */
+function check_field($required_fields, $fields_list)
+{
+    //Проверка формата URL-адресов, без кириллицы
+    if (in_array('post-link', $required_fields)) {
+        if (!filter_var($_POST['post-link'], FILTER_VALIDATE_URL)) {
+            $errors['post-link'] = 'Ссылка. Введенное значение не является ссылкой';
+        }
+    }
+
+    if (in_array('photo-url', $required_fields)) {
+        if (!filter_var($_POST['photo-url'], FILTER_VALIDATE_URL)) {
+            $errors['photo-url'] = 'Ссылка из интернета. Введенное значение не является ссылкой';
+        }
+    }
+
+    foreach ($required_fields as $field) {
+        if (empty($_POST[$field])) {
+            $errors[$field] = $fields_list[$field] . '. Это поле должно быть заполнено.';
+        }
+    }
+//    die('<pre>' . var_export($errors, true));
+    return $errors;
 }

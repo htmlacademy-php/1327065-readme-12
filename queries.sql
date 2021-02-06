@@ -25,6 +25,7 @@ VALUES (NOW() - INTERVAL 55 MINUTE, 'Цитата', 4, 'Борьба — Обя�
        (NOW() - INTERVAL 6 DAY, 'Наконец, обработал фотки!', 1, '', '', 'img/rock-medium.jpg', '', '', 3, 15),
        (NOW() - INTERVAL 3 WEEK, 'Моя мечта', 1, '', '', 'img/coast-medium.jpg', '', '', 2, 55),
        (NOW() - INTERVAL 36 DAY, 'Лучшие курсы', 5, '', '', '', '', 'www.htmlacademy.ru', 5, 1),
+       (NOW() - INTERVAL 36 DAY, 'Saving image from PHP URL', 5, '', '', '', '', 'https://stackoverflow.com/questions/724391/saving-image-from-php-url', 4, 1),
        (NOW() - INTERVAL 55 MINUTE, '', 4, 'Где родился, там и пригодился', 'Народная мудрость', '', '',
         '', 5, 5),
        (NOW() - INTERVAL 36 DAY, 'PhpStorm. Настройка интерфейса. Визуальное оформление. Установка тем.', 2, '', '', '',
