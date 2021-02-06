@@ -1,9 +1,10 @@
 <?php
 require_once 'constants.php'; // Подключаем файл с константами
 require_once 'functions.php'; // Подключаем файл с функциями
+require_once 'helpers.php'; // Подключаем файл с встроенными функциями
 require_once 'data.php'; // Подключаем файл с данными
 
-// Выводим пост
+// id поста
 $current_post_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
 $where = '';
@@ -18,7 +19,18 @@ $requestPostShow = "
     JOIN content_type ct ON p.content_type_id = ct.id
     $where
     ";
-$getPostShow = requestDataBase($requestPostShow, 'all');
+$getPostShow = requestDataBase($connect, $requestPostShow);
+
+// Тип поста
+$postType = $getPostShow[0]['icon'];
+
+//Пост с видео
+$show_video = NULL;
+switch ($postType) {
+    case 'video':
+        $show_video = embed_youtube_video($getPostShow[0]['video_content']);
+        break;
+}
 
 if (!$getPostShow) {
     open_404_page($is_auth, $user_name);
@@ -31,7 +43,7 @@ $requestLikesCount = "
     JOIN posts p ON p.id = l.post_id
     $where
     ";
-$getLikesCount = requestDataBase($requestLikesCount, 'num');
+$getLikesCount = requestDataBase($connect, $requestLikesCount, 'num');
 
 // Считаем комментарии
 $requestCommentsCount = "
@@ -40,7 +52,7 @@ $requestCommentsCount = "
     JOIN posts p ON p.id = c.post_id
     $where
     ";
-$getCommentsCount = requestDataBase($requestCommentsCount, 'num');
+$getCommentsCount = requestDataBase($connect, $requestCommentsCount, 'num');
 
 // Вычисляем Автора поста по айпи
 $requestAuthorId = "
@@ -48,7 +60,7 @@ $requestAuthorId = "
     FROM posts p
     WHERE p.id = $current_post_id
     ";
-$getAuthorId = requestDataBase($requestAuthorId, 'row');
+$getAuthorId = requestDataBase($connect, $requestAuthorId, 'row');
 
 // Считаем количество постов Автора поста
 $requestPostsCount = "
@@ -56,7 +68,7 @@ $requestPostsCount = "
     FROM posts p
     WHERE p.author_id = $getAuthorId
     ";
-$getPostsCount = requestDataBase($requestPostsCount, 'num');
+$getPostsCount = requestDataBase($connect, $requestPostsCount, 'num');
 
 // Считаем количество подписчиков Автора поста
 $requestSubscribersCount = "
@@ -64,30 +76,23 @@ $requestSubscribersCount = "
     FROM subscription s
     WHERE s.influencer_id = $getAuthorId
     ";
-$getSubscribersCount = requestDataBase($requestSubscribersCount, 'num');
+$getSubscribersCount = requestDataBase($connect, $requestSubscribersCount, 'num');
 
+$show_post = include_template('post-' . $postType . '.php', [
+    'postShow' => $getPostShow,
+    'videoShow' => $show_video
+]);
 
-$getPostQuote = include_template('post-quote', ['postShow' => $getPostShow]);
-$getPostText = include_template('post-text', ['postShow' => $getPostShow]);
-$getPostPhoto = include_template('post-photo', ['postShow' => $getPostShow]);
-$getPostVideo = include_template('post-video', ['postShow' => $getPostShow]);
-$getPostLink = include_template('post-link', ['postShow' => $getPostShow]);
-
-
-$getContentPage = include_template('post', [
+$getContentPage = include_template('post.php', [
     'postShow' => $getPostShow,
     'authorPostsCount' => $getPostsCount,
     'authorSubscribersCount' => $getSubscribersCount,
     'likesCount' => $getLikesCount,
     'commentsCount' => $getCommentsCount,
-    'postPhoto' => $getPostPhoto,
-    'postVideo' => $getPostVideo,
-    'postText' => $getPostText,
-    'postQuote' => $getPostQuote,
-    'postLink' => $getPostLink
+    'showPost' => $show_post
 ]);
 
-$getLayout = include_template('layout', [
+$getLayout = include_template('layout.php', [
     'page_title' => $page_title,
     'contentPage' => $getContentPage,
     'is_auth' => $is_auth,

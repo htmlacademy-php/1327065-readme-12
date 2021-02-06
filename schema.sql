@@ -1,8 +1,11 @@
-DROP DATABASE IF EXISTS readme; -- только для обучения
-CREATE DATABASE readme
+DROP
+DATABASE IF EXISTS readme; -- только для обучения
+CREATE
+DATABASE readme
     DEFAULT CHARACTER SET utf8
     DEFAULT COLLATE utf8_general_ci;
-USE readme;
+USE
+readme;
 
 CREATE TABLE users
 (
@@ -11,7 +14,7 @@ CREATE TABLE users
     email         VARCHAR(128) NOT NULL UNIQUE,
     login         VARCHAR(64)  NOT NULL UNIQUE,
     password      VARCHAR(64)  NOT NULL,
-    avatar_path   VARCHAR(1024),
+    avatar_path   VARCHAR(255),
     INDEX (login)
 );
 
@@ -20,15 +23,15 @@ CREATE TABLE posts
     id              INT AUTO_INCREMENT PRIMARY KEY UNIQUE,
     timestamp_add   TIMESTAMP, -- DEFAULT CURRENT_TIMESTAMP NOT NULL потом добавь, на рабочую базу
     title           VARCHAR(128) NOT NULL,
-    text_content    TEXT,
-    quote_author    VARCHAR(1024),
-    image_content   VARCHAR(1024),
-    video_content   VARCHAR(1024),
-    link            VARCHAR(1024),
+    text_content    TEXT,      -- NOT NULL ?
+    image_content   VARCHAR(255),
+    video_content   VARCHAR(255),
+    link_content    VARCHAR(255),
+    quote_author    VARCHAR(255),
     show_count      INT,
     author_id       INT          NOT NULL,
     content_type_id INT,
-    hashtag         VARCHAR(1024),
+    hashtag         VARCHAR(255),
     INDEX (title)
 );
 
@@ -38,7 +41,7 @@ CREATE TABLE comments
     timestamp_add  TIMESTAMP,
     post_id        INT NOT NULL,
     commentator_id INT NOT NULL,
-    comment        VARCHAR(1024)
+    comment        TEXT
 );
 
 CREATE TABLE likes
@@ -59,7 +62,7 @@ CREATE TABLE messages
 (
     id            INT AUTO_INCREMENT PRIMARY KEY UNIQUE,
     timestamp_add TIMESTAMP,
-    content       VARCHAR(1024),
+    content       VARCHAR(255),
     sender_id     INT NOT NULL,
     recipient_id  INT NOT NULL
 );
@@ -74,6 +77,6 @@ CREATE TABLE hashtags
 CREATE TABLE content_type
 (
     id   INT AUTO_INCREMENT PRIMARY KEY UNIQUE,
-    type VARCHAR(1024),
-    icon VARCHAR(1024)
+    type VARCHAR(64),
+    icon VARCHAR(64)
 );

@@ -63,59 +63,58 @@
 
 
             <!-- Показываем посты -->
-            <?php foreach ($contentShow as $key => $val): ?>
+            <?php foreach ($contentShow as $value): ?>
                 <!-- тип поста -->
-                <article class="popular__post post post-<?= ($val['icon']); ?>">
+                <article class="popular__post post post-<?= $value['icon']; ?>">
                     <header class="post__header">
                         <!--здесь заголовок-->
-                        <a href="post.php?id=<?= ($val['id']); ?>">
-                            <h2><?= ($val['title']); ?></h2>
+                        <a href="post.php?id=<?= $value['id']; ?>">
+                            <h2><?= $value['title']; ?></h2>
                         </a>
                     </header>
                     <div class="post__main">
                         <!--здесь содержимое карточки-->
-                        <?php if ($val['icon'] == 'text'): ?>
+                        <?php if ($value['icon'] == 'text'): ?>
                             <!--содержимое для поста-текста-->
-                            <p><?= (cut_text($val['text_content'])); ?></p>
-                        <?php elseif ($val['icon'] == 'quote'): ?>
+                            <p><?= (cut_text($value['text_content'])); ?></p>
+                        <?php elseif ($value['icon'] == 'quote'): ?>
                             <!--содержимое для поста-цитаты-->
                             <blockquote>
                                 <p>
-                                    <?= ($val['text_content']); ?>
+                                    <?= $value['text_content']; ?>
                                 </p>
-                                <cite><?= ($val['quote_author']); ?></cite>
+                                <cite><?= $value['quote_author']; ?></cite>
                             </blockquote>
-                        <?php elseif ($val['icon'] == 'photo'): ?>
+                        <?php elseif ($value['icon'] == 'photo'): ?>
                             <!--содержимое для поста-фото-->
                             <div class="post-photo__image-wrapper">
-                                <img src="img/<?= ($val['image_content']); ?>" alt="Фото от пользователя" width="360"
+                                <img src="<?= $value['image_content']; ?>" alt="Фото от пользователя" width="360"
                                      height="240">
                             </div>
-                        <?php elseif ($val['icon'] == 'link'): ?>
+                        <?php elseif ($value['icon'] == 'link'): ?>
                             <!--содержимое для поста-ссылки-->
                             <div class="post-link__wrapper">
-                                <a class="post-link__external" href="http://<?= ($val['link']); ?>"
+                                <a class="post-link__external" href="http://<?= $value['link_content']; ?>" target="_blank" rel="nofollow"
                                    title="Перейти по ссылке">
                                     <div class="post-link__info-wrapper">
                                         <div class="post-link__icon-wrapper">
-                                            <img src="https://www.google.com/s2/favicons?domain=<?= ($val['link']); ?>"
+                                            <img src="https://www.google.com/s2/favicons?domain=<?= $value['link_content']; ?>"
                                                  alt="Иконка">
                                         </div>
                                         <div class="post-link__info">
-                                            <h3><?= ($val['title']); ?></h3>
+                                            <h3><?= $value['title']; ?></h3>
                                         </div>
                                     </div>
-                                    <span><?= ($val['link']); ?></span>
+                                    <span><?= $value['link_content']; ?></span>
                                 </a>
                             </div>
-                        <?php elseif ($val['icon'] == 'video'): ?>
+                        <?php elseif ($value['icon'] == 'video'): ?>
                             <!--содержимое для поста-видео-->
                             <div class="post-video__block">
                                 <div class="post-video__preview">
-                                    <?= embed_youtube_cover(/* вставьте ссылку на видео */); ?>
-                                    <img src="img/coast-medium.jpg" alt="Превью к видео" width="360" height="188">
+                                    <?= embed_youtube_cover($value['video_content']); ?>
                                 </div>
-                                <a href="post-details.html" class="post-video__play-big button">
+                                <a href="<?= $value['video_content']; ?>" target="_blank" rel="nofollow" class="post-video__play-big button">
                                     <svg class="post-video__play-big-icon" width="14" height="14">
                                         <use xlink:href="#icon-video-play-big"></use>
                                     </svg>
@@ -129,18 +128,18 @@
                             <a class="post__author-link" href="#" title="Автор">
                                 <div class="post__avatar-wrapper">
                                     <!--укажите путь к файлу аватара-->
-                                    <img class="post__author-avatar" src="img/<?= ($val['avatar_path']); ?>"
+                                    <img class="post__author-avatar" src="img/<?= $value['avatar_path']; ?>"
                                          alt="Аватар пользователя">
                                 </div>
                                 <div class="post__info">
                                     <b class="post__author-name">
                                         <!--здесь имя пользователя-->
-                                        <?= ($val['login']); ?>
+                                        <?= $value['login']; ?>
                                     </b>
                                     <time class="post__time"
-                                          datetime="<?= show_date(($val['timestamp_add']), 'datetime_format'); ?>"
-                                          title="<?= show_date(($val['timestamp_add']), 'title_format'); ?>">
-                                        <?= show_date(($val['timestamp_add']), 'relative_format'); ?> назад
+                                          datetime="<?= show_date(($value['timestamp_add']), 'datetime_format'); ?>"
+                                          title="<?= show_date(($value['timestamp_add']), 'title_format'); ?>">
+                                        <?= show_date(($value['timestamp_add']), 'relative_format'); ?> назад
                                     </time>
                                 </div>
                             </a>

@@ -24,18 +24,17 @@ function is_date_valid(string $date): bool
 /**
  * Создает подготовленное выражение на основе готового SQL запроса и переданных данных
  *
- * @param $link mysqli Ресурс соединения
+ * @param $connect mysqli Ресурс соединения
  * @param $sql string SQL запрос с плейсхолдерами вместо значений
  * @param array $data Данные для вставки на место плейсхолдеров
  *
  * @return mysqli_stmt Подготовленное выражение
  */
-function db_get_prepare_stmt($link, $sql, $data = [])
-{
-    $stmt = mysqli_prepare($link, $sql);
+function db_get_prepare_stmt($connect, $sql, $data = []) {
+    $stmt = mysqli_prepare($connect, $sql);
 
     if ($stmt === false) {
-        $errorMsg = 'Не удалось инициализировать подготовленное выражение: ' . mysqli_error($link);
+        $errorMsg = 'Не удалось инициализировать подготовленное выражение: ' . mysqli_error($connect);
         die($errorMsg);
     }
 
@@ -69,8 +68,8 @@ function db_get_prepare_stmt($link, $sql, $data = [])
         $func = 'mysqli_stmt_bind_param';
         $func(...$values);
 
-        if (mysqli_errno($link) > 0) {
-            $errorMsg = 'Не удалось связать подготовленное выражение с параметрами: ' . mysqli_error($link);
+        if (mysqli_errno($connect) > 0) {
+            $errorMsg = 'Не удалось связать подготовленное выражение с параметрами: ' . mysqli_error($connect);
             die($errorMsg);
         }
     }
